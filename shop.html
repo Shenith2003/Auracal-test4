@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — AURACAL</title>
+  <meta name="description" content="Browse the AURACAL collection. Premium tech-wear designed for the modern era — jackets, hoodies, pants, and more.">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ===== SHOP-SPECIFIC STYLES ===== */
+
+    .shop-hero {
+      padding-top: calc(var(--nav-height) + var(--space-4xl));
+      padding-bottom: var(--space-3xl);
+      text-align: center;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .shop-hero__title {
+      opacity: 0;
+      animation: heroFadeUp 0.8s var(--ease-out) 0.2s forwards;
+    }
+
+    .shop-hero__subtitle {
+      margin-top: var(--space-md);
+      opacity: 0;
+      animation: heroFadeUp 0.8s var(--ease-out) 0.4s forwards;
+    }
+
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding: var(--space-xl) 0;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 10px 24px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      transition: all var(--transition-base);
+      cursor: pointer;
+    }
+
+    .filter-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--glass-border-hover);
+      background: var(--glass-bg-strong);
+    }
+
+    .filter-btn.active {
+      color: var(--bg-primary);
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Product Grid */
+    .products-section {
+      padding-bottom: var(--space-5xl);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-xl);
+    }
+
+    /* Product Card */
+    .product-card {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all var(--transition-base);
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .product-card__image-wrap {
+      position: relative;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      background: var(--bg-tertiary);
+    }
+
+    .product-card__image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-out);
+    }
+
+    .product-card:hover .product-card__image-wrap img {
+      transform: scale(1.08);
+    }
+
+    /* Overlay with Add to Cart */
+    .product-card__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(5,5,5,0.85) 0%, rgba(5,5,5,0) 60%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: var(--space-xl);
+      opacity: 0;
+      transition: opacity var(--transition-base);
+    }
+
+    .product-card:hover .product-card__overlay {
+      opacity: 1;
+    }
+
+    .product-card__add-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-radius: var(--radius-md);
+      transform: translateY(10px);
+      transition: all var(--transition-base);
+      cursor: pointer;
+    }
+
+    .product-card:hover .product-card__add-btn {
+      transform: translateY(0);
+    }
+
+    .product-card__add-btn:hover {
+      background: #00ffb8;
+      box-shadow: 0 4px 20px var(--accent-glow-strong);
+    }
+
+    /* Added state */
+    .product-card__add-btn.added {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      pointer-events: none;
+    }
+
+    .product-card__info {
+      padding: var(--space-lg) var(--space-sm) var(--space-sm);
+    }
+
+    .product-card__category {
+      font-size: 0.625rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-xs);
+    }
+
+    .product-card__name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: var(--space-xs);
+    }
+
+    .product-card__price {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .product-card__tag {
+      position: absolute;
+      top: var(--space-md);
+      left: var(--space-md);
+      padding: 5px 12px;
+      font-size: 0.5625rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: var(--radius-full);
+      z-index: 2;
+    }
+
+    .product-card__tag--new {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .product-card__tag--limited {
+      background: rgba(255, 200, 55, 0.9);
+      color: var(--bg-primary);
+    }
+
+    /* Cart Toast */
+    .cart-toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 16px 28px;
+      background: var(--glass-bg-strong);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s var(--ease-out);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .cart-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .cart-toast__icon {
+      color: var(--accent);
+      font-size: 1.125rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1200px) {
+      .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-md);
+      }
+
+      .filter-bar {
+        gap: 6px;
+      }
+
+      .filter-btn {
+        padding: 8px 16px;
+        font-size: 0.6875rem;
+      }
+
+      .cart-toast {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+        max-width: 360px;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" id="nav-logo">AURA<span>CAL</span></a>
+      <div class="nav__toggle" id="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </div>
+      <ul class="nav__links" id="nav-links">
+        <li><a href="index.html" class="nav__link" id="link-home">Home</a></li>
+        <li><a href="shop.html" class="nav__link" id="link-shop">Shop</a></li>
+        <li><a href="size-guide.html" class="nav__link" id="link-size">Size Guide</a></li>
+        <li><a href="auth.html" class="nav__link" id="link-auth">Sign In</a></li>
+      </ul>
+      <div class="nav__mobile-overlay" id="nav-overlay"></div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ===== SHOP HERO ===== -->
+    <section class="shop-hero" id="shop-hero">
+      <div class="container">
+        <h1 class="heading-lg shop-hero__title">The Collection</h1>
+        <p class="body-lg shop-hero__subtitle">Precision-engineered tech-wear for the modern minimalist.</p>
+      </div>
+    </section>
+
+    <!-- ===== FILTER + PRODUCTS ===== -->
+    <section class="products-section">
+      <div class="container">
+        <div class="filter-bar" id="filter-bar">
+          <button class="filter-btn active" data-filter="all" id="filter-all">All</button>
+          <button class="filter-btn" data-filter="outerwear" id="filter-outerwear">Outerwear</button>
+          <button class="filter-btn" data-filter="tops" id="filter-tops">Tops</button>
+          <button class="filter-btn" data-filter="bottoms" id="filter-bottoms">Bottoms</button>
+          <button class="filter-btn" data-filter="accessories" id="filter-accessories">Accessories</button>
+        </div>
+
+        <div class="products-grid stagger-children" id="products-grid">
+          <!-- Products injected by JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== CART TOAST ===== -->
+  <div class="cart-toast" id="cart-toast">
+    <span class="cart-toast__icon">✓</span>
+    <span id="cart-toast-text">Added to cart</span>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="main-footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <a href="index.html" class="nav__logo">AURA<span>CAL</span></a>
+          <p class="body-sm footer__brand-description">Engineered for tomorrow. Sustainable tech-wear that merges innovation with minimalist design.</p>
+        </div>
+        <div>
+          <h4 class="footer__heading">Explore</h4>
+          <a href="index.html" class="footer__link">Home</a>
+          <a href="shop.html" class="footer__link">Shop</a>
+          <a href="size-guide.html" class="footer__link">Size Guide</a>
+          <a href="auth.html" class="footer__link">Account</a>
+        </div>
+        <div>
+          <h4 class="footer__heading">Company</h4>
+          <a href="#" class="footer__link">About</a>
+          <a href="#" class="footer__link">Sustainability</a>
+          <a href="#" class="footer__link">Careers</a>
+          <a href="#" class="footer__link">Press</a>
+        </div>
+        <div>
+          <h4 class="footer__heading">Support</h4>
+          <a href="#" class="footer__link">Contact</a>
+          <a href="#" class="footer__link">FAQ</a>
+          <a href="#" class="footer__link">Shipping</a>
+          <a href="#" class="footer__link">Returns</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__copy">&copy; 2026 AURACAL. All rights reserved.</p>
+        <div class="footer__socials">
+          <a href="#" class="footer__social-link">Instagram</a>
+          <a href="#" class="footer__social-link">Twitter</a>
+          <a href="#" class="footer__social-link">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    /* ===== SHOP PAGE JS ===== */
+
+    const products = [
+      { id: 1, name: 'Phantom Hoodie', category: 'tops', price: '₹8,900', image: 'images/product-hoodie.png', tag: 'new' },
+      { id: 2, name: 'Stealth Shell Jacket', category: 'outerwear', price: '₹18,500', image: 'images/product-jacket.png', tag: 'new' },
+      { id: 3, name: 'Drift Cargo Pants', category: 'bottoms', price: '₹7,400', image: 'images/product-pants.png', tag: null },
+      { id: 4, name: 'Nexus Utility Vest', category: 'accessories', price: '₹12,500', image: 'images/product-vest.png', tag: 'limited' },
+      { id: 5, name: 'Core Tech Tee', category: 'tops', price: '₹4,200', image: 'images/product-tshirt.png', tag: null },
+      { id: 6, name: 'Obsidian Trench', category: 'outerwear', price: '₹24,000', image: 'images/product-longcoat.png', tag: 'limited' },
+      { id: 7, name: 'Flux Training Shorts', category: 'bottoms', price: '₹5,100', image: 'images/product-shorts.png', tag: null },
+      { id: 8, name: 'Phantom Hoodie II', category: 'tops', price: '₹9,800', image: 'images/product-hoodie.png', tag: 'new' },
+    ];
+
+    const grid = document.getElementById('products-grid');
+    const filterBar = document.getElementById('filter-bar');
+    const toast = document.getElementById('cart-toast');
+    const toastText = document.getElementById('cart-toast-text');
+    let toastTimer = null;
+
+    function renderProducts(filter = 'all') {
+      const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+
+      grid.innerHTML = '';
+
+      filtered.forEach((product, i) => {
+        const card = document.createElement('div');
+        card.className = 'product-card glass-card reveal';
+        card.style.transitionDelay = `${i * 0.06}s`;
+        card.setAttribute('data-category', product.category);
+        card.id = `product-${product.id}`;
+
+        let tagHTML = '';
+        if (product.tag === 'new') {
+          tagHTML = '<span class="product-card__tag product-card__tag--new">New</span>';
+        } else if (product.tag === 'limited') {
+          tagHTML = '<span class="product-card__tag product-card__tag--limited">Limited</span>';
+        }
+
+        const categoryLabel = product.category.charAt(0).toUpperCase() + product.category.slice(1);
+
+        card.innerHTML = `
+          ${tagHTML}
+          <div class="product-card__image-wrap">
+            <img src="${product.image}" alt="${product.name}" loading="lazy">
+            <div class="product-card__overlay">
+              <button class="product-card__add-btn" data-id="${product.id}" id="add-btn-${product.id}">Add to Cart</button>
+            </div>
+          </div>
+          <div class="product-card__info">
+            <div class="product-card__category">${categoryLabel}</div>
+            <h3 class="product-card__name">${product.name}</h3>
+            <p class="product-card__price">${product.price}</p>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      // Re-init scroll reveal for new cards
+      requestAnimationFrame(() => {
+        initScrollReveal();
+      });
+
+      // Bind add-to-cart buttons
+      document.querySelectorAll('.product-card__add-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.dataset.id;
+          const p = products.find(x => x.id == id);
+          btn.textContent = 'Added ✓';
+          btn.classList.add('added');
+          showToast(`${p.name} added to cart`);
+        });
+      });
+    }
+
+    function showToast(message) {
+      toastText.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // Filter buttons
+    filterBar.addEventListener('click', (e) => {
+      if (e.target.classList.contains('filter-btn')) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        renderProducts(e.target.dataset.filter);
+      }
+    });
+
+    // Initial render
+    renderProducts();
+
+    // Re-export for shared script
+    function initScrollReveal() {
+      const reveals = document.querySelectorAll('.reveal:not(.visible)');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+      );
+      reveals.forEach(el => observer.observe(el));
+    }
+  </script>
+</body>
+</html>

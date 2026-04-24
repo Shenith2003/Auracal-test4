@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Size Guide — AURACAL</title>
+  <meta name="description" content="Find your perfect AURACAL fit with our interactive sizing calculator. Input your measurements for a personalised size recommendation.">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .sg-hero{padding-top:calc(var(--nav-height) + var(--space-4xl));padding-bottom:var(--space-3xl);text-align:center;background:var(--bg-secondary);border-bottom:1px solid var(--glass-border)}
+    .sg-hero__title{opacity:0;animation:fadeUp .8s var(--ease-out) .2s forwards}
+    .sg-hero__sub{margin-top:var(--space-md);opacity:0;animation:fadeUp .8s var(--ease-out) .4s forwards}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+    .sg-layout{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3xl);align-items:start;padding:var(--space-4xl) 0}
+
+    /* Calculator Card */
+    .calc-card{padding:var(--space-2xl);position:relative;overflow:hidden}
+    .calc-card__title{font-family:var(--font-display);font-size:1.25rem;font-weight:600;margin-bottom:var(--space-xl)}
+    .calc-form{display:flex;flex-direction:column;gap:var(--space-lg)}
+    .calc-group label{display:block;font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:var(--space-sm)}
+    .calc-group__row{display:flex;gap:var(--space-sm)}
+    .calc-input{flex:1;padding:14px 16px;font-size:.9375rem;color:var(--text-primary);background:rgba(255,255,255,.04);border:1px solid var(--glass-border);border-radius:var(--radius-md);transition:all var(--transition-base)}
+    .calc-input:focus{border-color:var(--accent);background:rgba(0,229,160,.04);box-shadow:0 0 0 3px var(--accent-glow)}
+    .calc-input::placeholder{color:var(--text-tertiary)}
+    .unit-label{display:flex;align-items:center;padding:0 12px;font-size:.75rem;font-weight:500;color:var(--text-tertiary);background:rgba(255,255,255,.03);border:1px solid var(--glass-border);border-radius:var(--radius-md);white-space:nowrap}
+
+    .calc-select{width:100%;padding:14px 16px;font-size:.9375rem;color:var(--text-primary);background:rgba(255,255,255,.04);border:1px solid var(--glass-border);border-radius:var(--radius-md);transition:all var(--transition-base);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(255,255,255,0.4)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+    .calc-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+    .calc-select option{background:var(--bg-tertiary);color:var(--text-primary)}
+
+    /* Result Panel */
+    .result-panel{margin-top:var(--space-xl);padding:var(--space-xl);background:rgba(0,229,160,.04);border:1px solid rgba(0,229,160,.12);border-radius:var(--radius-lg);text-align:center;opacity:0;transform:translateY(15px) scale(.97);transition:all .5s var(--ease-out);pointer-events:none}
+    .result-panel.show{opacity:1;transform:translateY(0) scale(1);pointer-events:all}
+    .result-panel__label{font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:var(--space-sm)}
+    .result-panel__size{font-family:var(--font-display);font-size:clamp(3rem,8vw,5rem);font-weight:700;color:var(--accent);line-height:1;margin-bottom:var(--space-sm)}
+    .result-panel__desc{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+    .result-panel__confidence{display:inline-block;margin-top:var(--space-md);padding:6px 16px;font-size:.6875rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:var(--accent-glow);border-radius:var(--radius-full);color:var(--accent)}
+
+    /* Size Chart */
+    .chart-card{padding:var(--space-2xl)}
+    .chart-card__title{font-family:var(--font-display);font-size:1.25rem;font-weight:600;margin-bottom:var(--space-xl)}
+    .size-table{width:100%;border-collapse:collapse;font-size:.8125rem}
+    .size-table th,.size-table td{padding:14px 12px;text-align:center;border-bottom:1px solid var(--glass-border)}
+    .size-table th{font-size:.625rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary)}
+    .size-table td{color:var(--text-secondary)}
+    .size-table tr:last-child td{border-bottom:none}
+    .size-table tr.highlight td{background:rgba(0,229,160,.06);color:var(--accent);font-weight:600}
+    .size-table td:first-child{font-family:var(--font-display);font-weight:600;color:var(--text-primary)}
+
+    /* Tips */
+    .tips{margin-top:var(--space-2xl)}
+    .tips__title{font-family:var(--font-display);font-size:1rem;font-weight:600;margin-bottom:var(--space-lg)}
+    .tip-item{display:flex;gap:var(--space-md);align-items:flex-start;padding:var(--space-md) 0;border-bottom:1px solid var(--glass-border)}
+    .tip-item:last-child{border-bottom:none}
+    .tip-item__icon{flex-shrink:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:var(--accent-glow);color:var(--accent);font-size:.875rem}
+    .tip-item__text{font-size:.8125rem;color:var(--text-secondary);line-height:1.6}
+
+    @media(max-width:768px){
+      .sg-layout{grid-template-columns:1fr;gap:var(--space-xl)}
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" id="nav-logo">AURA<span>CAL</span></a>
+      <div class="nav__toggle" id="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></div>
+      <ul class="nav__links" id="nav-links">
+        <li><a href="index.html" class="nav__link" id="link-home">Home</a></li>
+        <li><a href="shop.html" class="nav__link" id="link-shop">Shop</a></li>
+        <li><a href="size-guide.html" class="nav__link" id="link-size">Size Guide</a></li>
+        <li><a href="auth.html" class="nav__link" id="link-auth">Sign In</a></li>
+      </ul>
+      <div class="nav__mobile-overlay" id="nav-overlay"></div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="sg-hero"><div class="container">
+      <h1 class="heading-lg sg-hero__title">Virtual Fit &amp; Size Guide</h1>
+      <p class="body-lg sg-hero__sub">Enter your measurements below and we'll recommend your perfect AURACAL size.</p>
+    </div></section>
+
+    <section class="section"><div class="container">
+      <div class="sg-layout">
+        <!-- Calculator -->
+        <div>
+          <div class="calc-card glass-card reveal">
+            <h2 class="calc-card__title">Fit-On Size Calculator</h2>
+            <div class="calc-form" id="calc-form">
+              <div class="calc-group">
+                <label for="calc-height">Height</label>
+                <div class="calc-group__row">
+                  <input type="number" class="calc-input" id="calc-height" placeholder="170" min="100" max="230">
+                  <span class="unit-label">cm</span>
+                </div>
+              </div>
+              <div class="calc-group">
+                <label for="calc-weight">Weight</label>
+                <div class="calc-group__row">
+                  <input type="number" class="calc-input" id="calc-weight" placeholder="70" min="30" max="200">
+                  <span class="unit-label">kg</span>
+                </div>
+              </div>
+              <div class="calc-group">
+                <label for="calc-chest">Chest</label>
+                <div class="calc-group__row">
+                  <input type="number" class="calc-input" id="calc-chest" placeholder="96" min="60" max="160">
+                  <span class="unit-label">cm</span>
+                </div>
+              </div>
+              <div class="calc-group">
+                <label for="calc-fit">Preferred Fit</label>
+                <select class="calc-select" id="calc-fit">
+                  <option value="regular">Regular Fit</option>
+                  <option value="slim">Slim Fit</option>
+                  <option value="relaxed">Relaxed Fit</option>
+                </select>
+              </div>
+              <button class="btn btn--primary" id="calc-submit" type="button">Find My Size</button>
+            </div>
+            <div class="result-panel" id="result-panel">
+              <div class="result-panel__label">Your Recommended Size</div>
+              <div class="result-panel__size" id="result-size">—</div>
+              <p class="result-panel__desc" id="result-desc"></p>
+              <span class="result-panel__confidence" id="result-confidence"></span>
+            </div>
+          </div>
+
+          <div class="tips reveal reveal-delay-2">
+            <h3 class="tips__title">Measurement Tips</h3>
+            <div class="tip-item"><div class="tip-item__icon">📏</div><p class="tip-item__text"><strong>Height:</strong> Stand straight against a wall, measure from the floor to the top of your head without shoes.</p></div>
+            <div class="tip-item"><div class="tip-item__icon">⚖️</div><p class="tip-item__text"><strong>Weight:</strong> Weigh yourself in the morning in light clothing for the most accurate reading.</p></div>
+            <div class="tip-item"><div class="tip-item__icon">📐</div><p class="tip-item__text"><strong>Chest:</strong> Wrap a tape measure around the fullest part of your chest, keeping the tape level and snug but not tight.</p></div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div>
+          <div class="chart-card glass-card reveal reveal-delay-1">
+            <h2 class="chart-card__title">AURACAL Size Chart</h2>
+            <table class="size-table" id="size-table">
+              <thead><tr><th>Size</th><th>Chest (cm)</th><th>Height (cm)</th><th>Weight (kg)</th></tr></thead>
+              <tbody>
+                <tr data-size="XS"><td>XS</td><td>82–88</td><td>155–165</td><td>45–55</td></tr>
+                <tr data-size="S"><td>S</td><td>88–94</td><td>163–172</td><td>55–65</td></tr>
+                <tr data-size="M"><td>M</td><td>94–102</td><td>170–180</td><td>65–78</td></tr>
+                <tr data-size="L"><td>L</td><td>102–110</td><td>178–188</td><td>78–92</td></tr>
+                <tr data-size="XL"><td>XL</td><td>110–118</td><td>185–196</td><td>90–105</td></tr>
+                <tr data-size="XXL"><td>XXL</td><td>118–126</td><td>192–205</td><td>100–120</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div></section>
+  </main>
+
+  <footer class="footer" id="main-footer"><div class="container">
+    <div class="footer__grid">
+      <div><a href="index.html" class="nav__logo">AURA<span>CAL</span></a><p class="body-sm footer__brand-description">Engineered for tomorrow. Sustainable tech-wear that merges innovation with minimalist design.</p></div>
+      <div><h4 class="footer__heading">Explore</h4><a href="index.html" class="footer__link">Home</a><a href="shop.html" class="footer__link">Shop</a><a href="size-guide.html" class="footer__link">Size Guide</a><a href="auth.html" class="footer__link">Account</a></div>
+      <div><h4 class="footer__heading">Company</h4><a href="#" class="footer__link">About</a><a href="#" class="footer__link">Sustainability</a><a href="#" class="footer__link">Careers</a><a href="#" class="footer__link">Press</a></div>
+      <div><h4 class="footer__heading">Support</h4><a href="#" class="footer__link">Contact</a><a href="#" class="footer__link">FAQ</a><a href="#" class="footer__link">Shipping</a><a href="#" class="footer__link">Returns</a></div>
+    </div>
+    <div class="footer__bottom"><p class="footer__copy">&copy; 2026 AURACAL. All rights reserved.</p><div class="footer__socials"><a href="#" class="footer__social-link">Instagram</a><a href="#" class="footer__social-link">Twitter</a><a href="#" class="footer__social-link">LinkedIn</a></div></div>
+  </div></footer>
+
+  <script src="script.js"></script>
+  <script>
+    const sizeData = [
+      { size:'XS', chest:[82,88],  height:[155,165], weight:[45,55] },
+      { size:'S',  chest:[88,94],  height:[163,172], weight:[55,65] },
+      { size:'M',  chest:[94,102], height:[170,180], weight:[65,78] },
+      { size:'L',  chest:[102,110],height:[178,188], weight:[78,92] },
+      { size:'XL', chest:[110,118],height:[185,196], weight:[90,105]},
+      { size:'XXL',chest:[118,126],height:[192,205], weight:[100,120]}
+    ];
+
+    const fitOffsets = { slim: -2, regular: 0, relaxed: 4 };
+
+    document.getElementById('calc-submit').addEventListener('click', calculate);
+    document.querySelectorAll('.calc-input').forEach(i => {
+      i.addEventListener('keydown', e => { if(e.key==='Enter') calculate(); });
+    });
+
+    function calculate() {
+      const h = parseFloat(document.getElementById('calc-height').value);
+      const w = parseFloat(document.getElementById('calc-weight').value);
+      const c = parseFloat(document.getElementById('calc-chest').value);
+      const fit = document.getElementById('calc-fit').value;
+
+      if(!h||!w||!c){ highlightEmpty(); return; }
+
+      const offset = fitOffsets[fit] || 0;
+      const adjChest = c + offset;
+
+      let bestScore = Infinity, bestSize = sizeData[2];
+      sizeData.forEach(s => {
+        const cm = (s.chest[0]+s.chest[1])/2;
+        const hm = (s.height[0]+s.height[1])/2;
+        const wm = (s.weight[0]+s.weight[1])/2;
+        const score = Math.abs(adjChest-cm)*2.5 + Math.abs(h-hm)*0.8 + Math.abs(w-wm)*1.2;
+        if(score < bestScore){ bestScore = score; bestSize = s; }
+      });
+
+      const confidence = bestScore < 8 ? 'Excellent match' : bestScore < 18 ? 'Good match' : 'Approximate match';
+      const confPct = bestScore < 8 ? '95%+' : bestScore < 18 ? '~85%' : '~70%';
+
+      const fitLabel = fit==='slim'?'a slim':'a '+fit;
+      const desc = `Based on your measurements (${h}cm, ${w}kg, ${c}cm chest) and ${fitLabel} fit preference, we recommend size ${bestSize.size} for optimal comfort and style.`;
+
+      const panel = document.getElementById('result-panel');
+      document.getElementById('result-size').textContent = bestSize.size;
+      document.getElementById('result-desc').textContent = desc;
+      document.getElementById('result-confidence').textContent = `${confidence} · ${confPct} confidence`;
+      panel.classList.add('show');
+
+      // Highlight table row
+      document.querySelectorAll('#size-table tbody tr').forEach(r => r.classList.remove('highlight'));
+      const row = document.querySelector(`#size-table tr[data-size="${bestSize.size}"]`);
+      if(row) row.classList.add('highlight');
+
+      panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+
+    function highlightEmpty() {
+      ['calc-height','calc-weight','calc-chest'].forEach(id => {
+        const el = document.getElementById(id);
+        if(!el.value) {
+          el.style.borderColor = '#ff4444';
+          setTimeout(() => el.style.borderColor = '', 1500);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURACAL — Engineered for Tomorrow</title>
+  <meta name="description" content="AURACAL is a premium futuristic tech-wear brand merging sustainable innovation with minimalist design. Discover clothing engineered for the modern era.">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ===== HOME-SPECIFIC STYLES ===== */
+
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero__bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero__bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.35;
+      transform: scale(1.05);
+      animation: heroZoom 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes heroZoom {
+      from { transform: scale(1.05); }
+      to   { transform: scale(1.15); }
+    }
+
+    .hero__bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(5,5,5,0.3) 0%,
+        rgba(5,5,5,0.1) 40%,
+        rgba(5,5,5,0.6) 80%,
+        rgba(5,5,5,1) 100%
+      );
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: var(--space-xl);
+      max-width: 900px;
+    }
+
+    .hero__label {
+      display: inline-block;
+      padding: 8px 20px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      backdrop-filter: blur(10px);
+      margin-bottom: var(--space-xl);
+      opacity: 0;
+      animation: heroFadeUp 1s var(--ease-out) 0.2s forwards;
+    }
+
+    .hero__title {
+      opacity: 0;
+      animation: heroFadeUp 1s var(--ease-out) 0.4s forwards;
+    }
+
+    .hero__title .accent {
+      background: linear-gradient(135deg, var(--accent), #00fff0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero__subtitle {
+      margin-top: var(--space-lg);
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 0;
+      animation: heroFadeUp 1s var(--ease-out) 0.6s forwards;
+    }
+
+    .hero__actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-lg);
+      margin-top: var(--space-2xl);
+      opacity: 0;
+      animation: heroFadeUp 1s var(--ease-out) 0.8s forwards;
+    }
+
+    @keyframes heroFadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero__scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+      opacity: 0;
+      animation: heroFadeUp 1s var(--ease-out) 1.2s forwards;
+    }
+
+    .hero__scroll-text {
+      font-size: 0.6875rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
+
+    .hero__scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+      50%      { opacity: 1;   transform: scaleY(1);   }
+    }
+
+    /* Manifesto Section */
+    .manifesto {
+      position: relative;
+      background: var(--bg-secondary);
+    }
+
+    .manifesto__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4xl);
+      align-items: center;
+    }
+
+    .manifesto__visual {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      aspect-ratio: 4/5;
+    }
+
+    .manifesto__visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s var(--ease-out);
+    }
+
+    .manifesto__visual:hover img {
+      transform: scale(1.05);
+    }
+
+    .manifesto__visual::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(5,5,5,0.5) 0%, transparent 50%);
+    }
+
+    .manifesto__text .label {
+      margin-bottom: var(--space-lg);
+    }
+
+    .manifesto__text p {
+      margin-top: var(--space-lg);
+    }
+
+    /* Pillars Section */
+    .pillars {
+      background: var(--bg-primary);
+    }
+
+    .pillars__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl);
+    }
+
+    .pillar-card {
+      padding: var(--space-2xl);
+      text-align: center;
+    }
+
+    .pillar-card__icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto var(--space-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    .pillar-card__title {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: var(--space-md);
+    }
+
+    .pillar-card__desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* Featured Products */
+    .featured {
+      background: var(--bg-secondary);
+    }
+
+    .featured__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl);
+    }
+
+    .featured-card {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .featured-card__image {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      background: var(--bg-tertiary);
+    }
+
+    .featured-card__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-out);
+    }
+
+    .featured-card:hover .featured-card__image img {
+      transform: scale(1.08);
+    }
+
+    .featured-card__info {
+      padding: var(--space-lg) 0 0;
+    }
+
+    .featured-card__name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: var(--space-xs);
+    }
+
+    .featured-card__price {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .featured-card__tag {
+      position: absolute;
+      top: var(--space-md);
+      left: var(--space-md);
+      padding: 6px 14px;
+      font-size: 0.625rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-radius: var(--radius-full);
+    }
+
+    /* Sustainability */
+    .sustain {
+      background: var(--bg-primary);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sustain__bg-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .sustain__content {
+      position: relative;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .sustain__stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl);
+      margin-top: var(--space-3xl);
+    }
+
+    .sustain__stat {
+      padding: var(--space-xl);
+    }
+
+    .sustain__stat-value {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .sustain__stat-label {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+
+    /* CTA Banner */
+    .cta-banner {
+      background: var(--bg-secondary);
+      text-align: center;
+    }
+
+    .cta-banner__inner {
+      padding: var(--space-4xl) var(--space-2xl);
+      background: linear-gradient(135deg, rgba(0, 229, 160, 0.06), rgba(0, 255, 240, 0.03));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+    }
+
+    .cta-banner__title {
+      margin-bottom: var(--space-lg);
+    }
+
+    .cta-banner__text {
+      max-width: 500px;
+      margin: 0 auto var(--space-2xl);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .manifesto__grid {
+        gap: var(--space-2xl);
+      }
+
+      .pillars__grid,
+      .featured__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .manifesto__grid {
+        grid-template-columns: 1fr;
+      }
+
+      .manifesto__visual {
+        aspect-ratio: 16/9;
+      }
+
+      .pillars__grid,
+      .sustain__stats {
+        grid-template-columns: 1fr;
+      }
+
+      .featured__grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero__actions {
+        flex-direction: column;
+      }
+
+      .hero__scroll-indicator {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" id="nav-logo">AURA<span>CAL</span></a>
+      <div class="nav__toggle" id="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </div>
+      <ul class="nav__links" id="nav-links">
+        <li><a href="index.html" class="nav__link" id="link-home">Home</a></li>
+        <li><a href="shop.html" class="nav__link" id="link-shop">Shop</a></li>
+        <li><a href="size-guide.html" class="nav__link" id="link-size">Size Guide</a></li>
+        <li><a href="auth.html" class="nav__link" id="link-auth">Sign In</a></li>
+      </ul>
+      <div class="nav__mobile-overlay" id="nav-overlay"></div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="hero">
+      <div class="hero__bg">
+        <img src="images/hero-bg.png" alt="AURACAL futuristic fabric texture" loading="eager">
+      </div>
+      <div class="hero__content">
+        <div class="hero__label label">SS 2026 — Now Available</div>
+        <h1 class="hero__title heading-xl">
+          Engineered<br>for <span class="accent">Tomorrow</span>
+        </h1>
+        <p class="hero__subtitle">
+          Where sustainable innovation meets minimalist precision. Clothing designed for the future, built for today.
+        </p>
+        <div class="hero__actions">
+          <a href="shop.html" class="btn btn--primary btn--lg" id="hero-cta-shop">Explore Collection</a>
+          <a href="#manifesto" class="btn btn--ghost btn--lg" id="hero-cta-learn">Our Vision</a>
+        </div>
+      </div>
+      <div class="hero__scroll-indicator">
+        <span class="hero__scroll-text">Scroll</span>
+        <div class="hero__scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ===== MANIFESTO ===== -->
+    <section class="section manifesto" id="manifesto">
+      <div class="container">
+        <div class="manifesto__grid">
+          <div class="manifesto__visual reveal">
+            <img src="images/product-jacket.png" alt="AURACAL tech-wear jacket">
+          </div>
+          <div class="manifesto__text">
+            <span class="label reveal">The AURACAL Manifesto</span>
+            <h2 class="heading-lg reveal reveal-delay-1">Redefining the Architecture of Clothing</h2>
+            <p class="body-lg reveal reveal-delay-2">
+              Every AURACAL garment begins as an idea about the future — how we'll move, what we'll need, and how we'll feel. We engineer each piece using bio-adaptive textiles and zero-waste construction methods.
+            </p>
+            <p class="body-md reveal reveal-delay-3">
+              Our design philosophy merges computational geometry with artisan craftsmanship, producing garments that are as intelligent as they are beautiful. This isn't fashion — it's functional art for the next generation.
+            </p>
+            <div class="reveal reveal-delay-4" style="margin-top: var(--space-2xl);">
+              <a href="shop.html" class="btn btn--primary" id="manifesto-cta">Discover More</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PILLARS ===== -->
+    <section class="section pillars" id="pillars">
+      <div class="container">
+        <div class="section__header">
+          <span class="label section__label reveal">Why AURACAL</span>
+          <h2 class="heading-lg section__title reveal reveal-delay-1">Three Pillars of Innovation</h2>
+          <p class="body-lg section__description reveal reveal-delay-2">Every decision we make is guided by our unwavering commitment to these principles.</p>
+        </div>
+        <div class="pillars__grid stagger-children">
+          <div class="pillar-card glass-card reveal">
+            <div class="pillar-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <h3 class="pillar-card__title">Adaptive Technology</h3>
+            <p class="pillar-card__desc">Bio-responsive fabrics that regulate temperature, wick moisture, and adapt to your body's micro-movements in real time.</p>
+          </div>
+          <div class="pillar-card glass-card reveal">
+            <div class="pillar-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <h3 class="pillar-card__title">Zero-Waste Design</h3>
+            <p class="pillar-card__desc">Computationally optimized patterns ensure every centimetre of material is used. No waste, no compromise, no exceptions.</p>
+          </div>
+          <div class="pillar-card glass-card reveal">
+            <div class="pillar-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </div>
+            <h3 class="pillar-card__title">Timeless Form</h3>
+            <p class="pillar-card__desc">Rooted in architectural minimalism, every silhouette is designed to transcend seasonal trends and remain relevant for decades.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FEATURED PRODUCTS ===== -->
+    <section class="section featured" id="featured">
+      <div class="container">
+        <div class="section__header">
+          <span class="label section__label reveal">Featured</span>
+          <h2 class="heading-lg section__title reveal reveal-delay-1">Select Pieces</h2>
+          <p class="body-lg section__description reveal reveal-delay-2">Curated from our latest collection — each piece a statement of intent.</p>
+        </div>
+        <div class="featured__grid stagger-children">
+          <a href="shop.html" class="featured-card glass-card reveal" id="featured-1">
+            <div class="featured-card__image">
+              <img src="images/product-hoodie.png" alt="AURACAL Phantom Hoodie" loading="lazy">
+            </div>
+            <div class="featured-card__info">
+              <h3 class="featured-card__name">Phantom Hoodie</h3>
+              <p class="featured-card__price">₹8,900</p>
+            </div>
+            <span class="featured-card__tag">New</span>
+          </a>
+          <a href="shop.html" class="featured-card glass-card reveal" id="featured-2">
+            <div class="featured-card__image">
+              <img src="images/product-vest.png" alt="AURACAL Nexus Vest" loading="lazy">
+            </div>
+            <div class="featured-card__info">
+              <h3 class="featured-card__name">Nexus Utility Vest</h3>
+              <p class="featured-card__price">₹12,500</p>
+            </div>
+          </a>
+          <a href="shop.html" class="featured-card glass-card reveal" id="featured-3">
+            <div class="featured-card__image">
+              <img src="images/product-pants.png" alt="AURACAL Drift Cargo" loading="lazy">
+            </div>
+            <div class="featured-card__info">
+              <h3 class="featured-card__name">Drift Cargo</h3>
+              <p class="featured-card__price">₹7,400</p>
+            </div>
+          </a>
+        </div>
+        <div class="reveal" style="text-align: center; margin-top: var(--space-3xl);">
+          <a href="shop.html" class="btn btn--ghost" id="featured-view-all">View All Products</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SUSTAINABILITY ===== -->
+    <section class="section sustain" id="sustainability">
+      <div class="sustain__bg-glow"></div>
+      <div class="container">
+        <div class="sustain__content">
+          <span class="label reveal">Sustainability</span>
+          <h2 class="heading-lg reveal reveal-delay-1" style="margin-top: var(--space-md);">Built Responsibly.<br>Worn Endlessly.</h2>
+          <p class="body-lg reveal reveal-delay-2" style="margin-top: var(--space-lg);">
+            We believe luxury and sustainability are not opposites — they are inseparable. Every AURACAL garment is carbon-neutral, cruelty-free, and built to last a lifetime.
+          </p>
+        </div>
+        <div class="sustain__stats stagger-children">
+          <div class="sustain__stat glass-card reveal">
+            <div class="sustain__stat-value">100%</div>
+            <div class="sustain__stat-label">Recycled Packaging</div>
+          </div>
+          <div class="sustain__stat glass-card reveal">
+            <div class="sustain__stat-value">0g</div>
+            <div class="sustain__stat-label">Carbon Per Garment</div>
+          </div>
+          <div class="sustain__stat glass-card reveal">
+            <div class="sustain__stat-value">15yr</div>
+            <div class="sustain__stat-label">Average Garment Lifespan</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA BANNER ===== -->
+    <section class="section cta-banner" id="cta-banner">
+      <div class="container">
+        <div class="cta-banner__inner reveal">
+          <h2 class="heading-lg cta-banner__title">Join the Future of Fashion</h2>
+          <p class="body-lg cta-banner__text">Be among the first to experience the next chapter of tech-wear. Create your AURACAL account today.</p>
+          <a href="auth.html" class="btn btn--primary btn--lg" id="cta-join">Create Account</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="main-footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <a href="index.html" class="nav__logo">AURA<span>CAL</span></a>
+          <p class="body-sm footer__brand-description">Engineered for tomorrow. Sustainable tech-wear that merges innovation with minimalist design.</p>
+        </div>
+        <div>
+          <h4 class="footer__heading">Explore</h4>
+          <a href="index.html" class="footer__link">Home</a>
+          <a href="shop.html" class="footer__link">Shop</a>
+          <a href="size-guide.html" class="footer__link">Size Guide</a>
+          <a href="auth.html" class="footer__link">Account</a>
+        </div>
+        <div>
+          <h4 class="footer__heading">Company</h4>
+          <a href="#" class="footer__link">About</a>
+          <a href="#" class="footer__link">Sustainability</a>
+          <a href="#" class="footer__link">Careers</a>
+          <a href="#" class="footer__link">Press</a>
+        </div>
+        <div>
+          <h4 class="footer__heading">Support</h4>
+          <a href="#" class="footer__link">Contact</a>
+          <a href="#" class="footer__link">FAQ</a>
+          <a href="#" class="footer__link">Shipping</a>
+          <a href="#" class="footer__link">Returns</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__copy">&copy; 2026 AURACAL. All rights reserved.</p>
+        <div class="footer__socials">
+          <a href="#" class="footer__social-link">Instagram</a>
+          <a href="#" class="footer__social-link">Twitter</a>
+          <a href="#" class="footer__social-link">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
